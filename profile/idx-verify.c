@@ -559,6 +559,7 @@ int main(int argc, char **argv)
           {
             if (is_block_present((bpf + (blocks_per_file * i)), global_block_layout))
             {
+              printf("BPF = %d\n", bpf);
               data_offset = ntohl(binheader[(bpf + var * blocks_per_file)*10 + 12]);
               data_size = ntohl(binheader[(bpf + var * blocks_per_file)*10 + 14]);
 
@@ -635,6 +636,7 @@ int main(int argc, char **argv)
                     for (i = 0; i < compression_block_size[0]; i++)
                     {
                       index = (compression_block_size[0] * compression_block_size[1] * k) + (compression_block_size[0] * j) + i;
+                      //printf("values_per_sample[var] = %d", values_per_sample[var]);
                       for (s = 0; s < values_per_sample[var]; s++)
                       {
                         int value_index = index + (ZYX[2] * compressed_global_bounds[0] * compressed_global_bounds[1] + ZYX[1] * compressed_global_bounds[0] + ZYX[0]) * total_compression_block_size;//TODO: add idx_data_offset
@@ -665,7 +667,7 @@ int main(int argc, char **argv)
 
                           check_bit = check_bit && (dlhs == drhs);
 
-                          //printf("X  %f %f\n", dlhs, drhs);
+                          printf("X[%d %d %d]  %f %f\n", k, j, i, dlhs, drhs);
                           //printf("[value at %d %d %d] is %f\n", (int)ZYX[0], (int)ZYX[1], (int)ZYX[2], dlhs);
                           if (dlhs == drhs)
                             element_count1++;

@@ -279,10 +279,10 @@ static void create_synthetic_simulation_data()
 
   for(var = 0; var < variable_count; var++)
   {
-    //if (var == 0 || var == 3)
-    //  values_per_sample = 3;
-    //else
-    values_per_sample = 1;
+    if (var == 0 || var == 3)
+      values_per_sample = 3;
+    else
+      values_per_sample = 1;
 
     data[var] = malloc(sizeof (*(data[var])) * local_box_size[0] * local_box_size[1] * local_box_size[2] * values_per_sample);
     for (k = 0; k < local_box_size[2]; k++)
@@ -452,7 +452,7 @@ int main(int argc, char **argv)
     //ret = PIDX_set_restructuring_box(file, restructured_box_size);
     //if (ret != PIDX_success)  terminate_with_error_msg("PIDX_set_restructuring_box");
 
-    //PIDX_set_compression_type(file, PIDX_CHUNKING_ONLY);
+    PIDX_set_compression_type(file, PIDX_CHUNKING_ONLY);
 
     //PIDX_set_compression_type(file, PIDX_CHUNKING_ZFP);
     //PIDX_set_lossy_compression_bit_rate(file, 2);
@@ -462,18 +462,18 @@ int main(int argc, char **argv)
     {
       sprintf(var_name, "variable_%d", var);
 
-      //if (var == 0 || var == 3)
-      //{
-      //  values_per_sample = 3;
-      //  ret = PIDX_variable_create(var_name,  values_per_sample * sizeof(double) * 8, FLOAT64_RGB , &variable[var]);
-      //  if (ret != PIDX_success)  terminate_with_error_msg("PIDX_variable_create");
-      //}
-      //else
-      //{
+      if (var == 0 || var == 3)
+      {
+        values_per_sample = 3;
+        ret = PIDX_variable_create(var_name,  values_per_sample * sizeof(double) * 8, FLOAT64_RGB , &variable[var]);
+        if (ret != PIDX_success)  terminate_with_error_msg("PIDX_variable_create");
+      }
+      else
+      {
         values_per_sample = 1;
         ret = PIDX_variable_create(var_name,  values_per_sample * sizeof(double) * 8, FLOAT64 , &variable[var]);
         if (ret != PIDX_success)  terminate_with_error_msg("PIDX_variable_create");
-      //}
+      }
 
       ret = PIDX_variable_write_data_layout(variable[var], local_offset, local_size, data[var], PIDX_row_major);
       if (ret != PIDX_success)  terminate_with_error_msg("PIDX_variable_data_layout");

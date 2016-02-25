@@ -1225,8 +1225,8 @@ PIDX_return_code PIDX_set_compression_type(PIDX_file file, int compression_type)
 
       if (file->idx->bits_per_block <= 0)
       {
-        file->idx->bits_per_block = 1;
-        file->idx_d->samples_per_block = 2;
+        file->idx->bits_per_block = 0;
+        file->idx_d->samples_per_block = 1;
       }
     }
     else
@@ -2056,6 +2056,7 @@ static PIDX_return_code populate_idx_dataset(PIDX_file file)
   }
   */
 
+
   /*
   if (rank == 0)
   {
@@ -2101,6 +2102,7 @@ static PIDX_return_code populate_idx_dataset(PIDX_file file)
     }
   }
   */
+
 
   block_layout->file_bitmap = malloc(file->idx_d->max_file_count * sizeof (int));
   memset(block_layout->file_bitmap, 0, file->idx_d->max_file_count * sizeof (int));
@@ -2186,6 +2188,14 @@ static PIDX_return_code populate_idx_dataset(PIDX_file file)
       block_layout->inverse_existing_file_index[i] = count;
       count++;
     }
+  }
+
+  for (i = 0; i < file->idx_d->max_file_count; i++)
+  {
+    if (rank == 0)
+     printf("BPF %d = %d\n", i, block_layout->block_count_per_file[i]);
+
+
   }
 
   return PIDX_success;

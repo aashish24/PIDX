@@ -2453,7 +2453,7 @@ PIDX_return_code PIDX_agg_buf_create(PIDX_agg_id agg_id, Agg_buffer agg_buffer, 
             int bytes_per_datatype = (total_chunk_size * agg_id->idx->variable[agg_buffer->var_number]->bits_per_value/8) / ( agg_id->idx->compression_factor);
 
             agg_buffer->buffer_size = sample_count * bytes_per_datatype;
-            //printf("O [%d] [%d %d %d] buffer_size = %d (%d %d)\n", rank, agg_buffer->file_number, agg_buffer->var_number, agg_buffer->sample_number, (int)agg_buffer->buffer_size, i1, j1);
+            printf("O [%d] [%d %d %d] buffer_size = %d (%d %d) [%d x %d / %d]\n", rank, agg_buffer->file_number, agg_buffer->var_number, agg_buffer->sample_number, (int)agg_buffer->buffer_size, i1, j1, global_block_layout->block_count_per_file[agg_buffer->file_number], agg_id->idx_d->samples_per_block, agg_buffer->aggregation_factor);
 
 #if !SIMULATE_IO
             agg_buffer->buffer = malloc(agg_buffer->buffer_size);

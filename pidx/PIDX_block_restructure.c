@@ -215,8 +215,9 @@ PIDX_return_code PIDX_chunk_buf_create(PIDX_chunk_id chunk_id)
           }
 
           // malloc the storage for all elements in the output array
-          out_patch->patch[j]->buffer = malloc(bytes_per_value * num_elems_group);
-          memset(out_patch->patch[j]->buffer, 0, bytes_per_value * num_elems_group);
+          out_patch->patch[j]->buffer = malloc(bytes_per_value * num_elems_group * var->values_per_sample);
+          memset(out_patch->patch[j]->buffer, 0, bytes_per_value * num_elems_group * var->values_per_sample);
+          printf("UFFER SIZE 1 = %d\n", bytes_per_value * num_elems_group * var->values_per_sample);
         }
       }
 
@@ -282,6 +283,7 @@ PIDX_return_code PIDX_chunk(PIDX_chunk_id chunk_id, int MODE)
     return PIDX_success;
   }
 
+  //printf()
 
   // compute the intra compression block strides
   int64_t *chunk_size = chunk_id->idx->chunk_size;
@@ -319,6 +321,7 @@ PIDX_return_code PIDX_chunk(PIDX_chunk_id chunk_id, int MODE)
         nz = ((out_patch->patch[0]->size[2] / chunk_id->idx->chunk_size[2]) + 1) * chunk_id->idx->chunk_size[2];
 
       unsigned char* temp_buffer = malloc(nx * ny * nz * var->bits_per_value/8 * var->values_per_sample);
+      printf("UFFER SIZE 2 = %d\n", nx * ny * nz * var->bits_per_value/8 * var->values_per_sample);
       if (temp_buffer == NULL)
         return PIDX_err_chunk;
 
@@ -350,22 +353,32 @@ PIDX_return_code PIDX_chunk(PIDX_chunk_id chunk_id, int MODE)
       int dy=4*(nx-(nx/4)*4);
       int dx=4;      
 
+      int values_per_sample;
+      int bits_per_value;
+      PIDX_values_per_datatype(var->type_name, &values_per_sample, &bits_per_value);
+      //printf("value_per_sample = %d bits_per_value = %d\n", values_per_sample, bits_per_value);
+
       int s1 = 0;
       int z, y, x;
       int zz, yy, xx;      
-      for (s1 = 0; s1 < var->values_per_sample; s1++)
+      for (s1 = 0; s1 < values_per_sample; s1++)
       {
         for (z=0;z<nz;z+=4)
         {
 #if !SIMULATE_IO
-          double* s = (double*)(out_patch->patch[0]->buffer+((z/4)*((ny+3)/4)*((nx+3)/4))*(var->bits_per_value/8)*cbz) + nx*ny*nz*s1;
+          int off = (((z/4)*((ny+3)/4)*((nx+3)/4))*(var->bits_per_value/8)*cbz) + nx*ny*nz*s1;
+          //double* s = (double*)(out_patch->patch[0]->buffer+((z/4)*((ny+3)/4)*((nx+3)/4))*(var->bits_per_value/8)*cbz) + nx*ny*nz*s1;
+          double* s = (double*)(out_patch->patch[0]->buffer) + (((z/4)*((ny+3)/4)*((nx+3)/4))*(var->bits_per_value/8)*cbz);
+          printf("BBBB %d\n", s);
 #endif
           for (y=0;y<ny;y+=4)
           {
             for (x=0;x<nx;x+=4)
             {
               int64_t diff=(z/4)*(dz+4*(ny/4)*(dy+4*(nx/4)*dx))+(y/4)*(dy+4*(nx/4)*dx)+(x/4)*dx;
-              double* q=p+var->values_per_sample*diff+s1;
+              //printf("off %d diff = %d\n",off,  diff);
+              double* q=p+values_per_sample*diff;//+s1;
+              //printf("AAAA %d\n", q);
 
               for (zz = 0; zz < 4; ++zz)
               {
@@ -378,9 +391,25 @@ PIDX_return_code PIDX_chunk(PIDX_chunk_id chunk_id, int MODE)
                     //printf("%d %d %f\n", i, j, s[i]);
 #if !SIMULATE_IO
                     if (MODE == PIDX_WRITE)
-                      s[nx*ny*nz*s1 + i*var->values_per_sample+s1] = q[j*var->values_per_sample + s1];
+                    {
+
+                      //double x =q[j*values_per_sample + s1];// s[nx*ny*nz*s1 + i/*values_per_sample*/+0];;
+                      //printf("%f\n",x);
+                      //printf("D %d [%d + %d*%d + %d] S %d %f\n", nx*ny*nz*s1 + i*1+0, nx*ny*nz*s1,  i, 1, s1, j*values_per_sample + s1, x);
+
+                      s[nx*ny*nz*s1 + i/*values_per_sample*/+0] = q[j*values_per_sample + s1];
+                    }
                     else
-                      q[j*var->values_per_sample + s1] = s[nx*ny*nz*s1 + i*var->values_per_sample+s1];
+                    {
+                      //printf("D %d [%d + %d*%d + %d] S %d\n", nx*ny*nz*s1 + i*1+0, nx*ny*nz*s1,  i, 1, s1, j*1 + s1);
+                      //double x =q[j*values_per_sample + s1];// s[nx*ny*nz*s1 + i/*values_per_sample*/+0];;
+                      //printf("%f\n",x);
+                      //double y =s[nx*ny*nz*s1 + i/*values_per_sample*/+0];;
+                      //printf("%f\n",y);
+
+                      q[j*values_per_sample + s1] = s[nx*ny*nz*s1 + i/*values_per_sample*/+0];
+                      //q[j*values_per_sample + s1] = s[nx*ny*nz*s1 + i/*values_per_sample*/+0];
+                    }
 #endif
                   }
                 }

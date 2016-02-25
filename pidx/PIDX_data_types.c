@@ -69,6 +69,116 @@ PIDX_data_type FLOAT64_RGB   = "3*float64";
 PIDX_data_type FLOAT64_RGBA  = "4*float64";
 
 
+PIDX_return_code PIDX_values_per_datatype(PIDX_data_type type, int* values, int* bits)
+{
+    if (strcmp(type, INT8) == 0)
+      *values = 1;
+    else if (strcmp(type, INT8_GA) == 0)
+      *values = 2;
+    else if (strcmp(type, INT8_RGB) == 0)
+      *values = 3;
+    else if (strcmp(type, INT8_RGBA) == 0)
+      *values = 4;
+
+    else if (strcmp(type, UINT8) == 0)
+      *values = 1;
+    else if (strcmp(type, UINT8_GA) == 0)
+      *values = 2;
+    else if (strcmp(type, UINT8_RGB) == 0)
+      *values = 3;
+    else if (strcmp(type, UINT8_RGBA) == 0)
+      *values = 4;
+
+    else if (strcmp(type, INT16) == 0)
+      *values = 1;
+    else if (strcmp(type, INT16_GA) == 0)
+      *values = 2;
+    else if (strcmp(type, INT16_RGB) == 0)
+      *values = 3;
+    else if (strcmp(type, INT16_RGBA) == 0)
+      *values = 4;
+
+    else if (strcmp(type, UINT16) == 0)
+      *values = 1;
+    else if (strcmp(type, UINT16_GA) == 0)
+      *values = 2;
+    else if (strcmp(type, UINT16_RGB) == 0)
+      *values = 3;
+    else if (strcmp(type, UINT16_RGBA) == 0)
+      *values = 4;
+
+    else if (strcmp(type, INT32) == 0)
+      *values = 1;
+    else if (strcmp(type, INT32_GA) == 0)
+      *values = 2;
+    else if (strcmp(type, INT32_RGB) == 0)
+      *values = 3;
+    else if (strcmp(type, INT32_RGBA) == 0)
+      *values = 4;
+
+    else if (strcmp(type, UINT32) == 0)
+      *values = 1;
+    else if (strcmp(type, UINT32_GA) == 0)
+      *values = 2;
+    else if (strcmp(type, UINT32_RGB) == 0)
+      *values = 3;
+    else if (strcmp(type, UINT32_RGBA) == 0)
+      *values = 4;
+
+    else if (strcmp(type, INT64) == 0)
+      *values = 1;
+    else if (strcmp(type, INT64_GA) == 0)
+      *values = 2;
+    else if (strcmp(type, INT64_RGB) == 0)
+      *values = 3;
+    else if (strcmp(type, INT64_RGBA) == 0)
+      *values = 4;
+
+    else if (strcmp(type, UINT64) == 0)
+      *values = 1;
+    else if (strcmp(type, UINT64_GA) == 0)
+      *values = 2;
+    else if (strcmp(type, UINT64_RGB) == 0)
+      *values = 3;
+    else if (strcmp(type, UINT64_RGBA) == 0)
+      *values = 4;
+
+    else if (strcmp(type, FLOAT32) == 0)
+      *values = 1;
+    else if (strcmp(type, FLOAT32_GA) == 0)
+      *values = 2;
+    else if (strcmp(type, FLOAT32_RGB) == 0)
+      *values = 3;
+    else if (strcmp(type, FLOAT32_RGBA) == 0)
+      *values = 4;
+
+    else if (strcmp(type, FLOAT64) == 0)
+    {
+      *values = 1;
+      *bits = 64;
+    }
+    else if (strcmp(type, FLOAT64_GA) == 0)
+    {
+      *values = 2;
+      *bits = 64;
+    }
+    else if (strcmp(type, FLOAT64_RGB) == 0)
+    {
+      *values = 3;
+      *bits = 64;
+    }
+    else if (strcmp(type, FLOAT64_RGBA) == 0)
+    {
+      *values = 4;
+      *bits = 64;
+    }
+    else
+      *values = 0;
+
+    return PIDX_success;
+}
+
+
 PIDX_return_code PIDX_default_bits_per_datatype(PIDX_data_type type, int* bits)
 {
   if (strcmp(type, INT8) == 0)

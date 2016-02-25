@@ -91,4 +91,6 @@ extern PIDX_data_type FLOAT64_RGBA;
 
 PIDX_return_code PIDX_default_bits_per_datatype(PIDX_data_type type, int* bits);
 
+PIDX_return_code PIDX_values_per_datatype(PIDX_data_type type, int* values, int* bits);
+
 #endif
